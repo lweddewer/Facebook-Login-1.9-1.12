@@ -196,16 +196,18 @@ function facebook_connect_create_update_user($fbData) {
 		remove_metadata($user->getGUID(), 'facebook_uid');
 		remove_metadata($user->getGUID(), 'facebook_controlled_profile');
 	}
-	// create new user
+	// Connect existing user
 	if (!$user) {
-		// check new registration allowed
-		if (!facebook_connect_allow_new_users_with_facebook()) {
-			register_error(elgg_echo('registerdisabled'));
-			forward();
-		}
 		$email= $fbData['user_profile']['email'];
 		$users= get_user_by_email($email);
+		// create new user
 		if(!$users) {
+			// check new registration allowed
+			if (!facebook_connect_allow_new_users_with_facebook()) {
+				register_error(elgg_echo('registerdisabled'));
+				forward();
+			}
+
 			// Elgg-ify facebook credentials
 			if(!empty($fbData['user_profile']['username'])) {
 				$username = $fbData['user_profile']['username'];
